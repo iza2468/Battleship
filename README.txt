@@ -1,2 +1,0 @@
-# Battleship
-Final summative project
