@@ -2,8 +2,8 @@ from pygame import *
 
 
 class UNIT:
-    def __init__(self, size: tuple, side: int, type: str):
-        self.coord = None
+    def __init__(self, size: tuple, side: int, type: str, coord: tuple):
+        self.coord = coord
         self.size = size
         self.side = side
         self.name = f'{type}{side}'
@@ -32,6 +32,12 @@ class UNIT:
             for j in range(self.size[1]):
                 GRIDS[self.side][j + self.coord[1]][i + self.coord[0]] = self
 
+    def pickup(self):
+        for i in range(self.size[0]):
+            for j in range(self.size[1]):
+                GRIDS[self.side][j + self.coord[1]][i + self.coord[0]] = None
+
+
     def __str__(self):
         return self.name
 
@@ -43,7 +49,7 @@ class UNIT:
 
 class WT(UNIT):
     def __init__(self, side: int):
-        UNIT.__init__(self, (1, 5), side, 'wt')
+        UNIT.__init__(self, (1, 5), side, 'wt', (800,30))
 
 
 def drawGrid(grid):
@@ -69,10 +75,12 @@ ships = [WT(0), WT(1)]
 
 # PLACING PHASE
 for i in range(2):
+    Dragging = None
     while True:
         win.fill((0,0,0))
         drawGrid(i)
-        Coord = ships[i].drawDrag(mouse.get_pos())
+        if Dragging is not None:
+            Coord = Dragging.drawDrag(mouse.get_pos())
         Leave = False
         for Event in event.get():
             if Event.type == QUIT:
@@ -81,14 +89,14 @@ for i in range(2):
                 if Event.button == 3:
                     ships[i].rotate()
                 elif Event.button == 1:
-                    print('click')
                     ships[i].place(Coord)
+            if Event.type == KEYUP:
+                if Event.key == K_RETURN:
                     Leave = True
                     break
         if Leave:
             break
         display.update()
-    print('we made it')
 
 
 for i in GRIDS:
