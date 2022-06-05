@@ -47,11 +47,7 @@ class UNIT:
             if y + self.size[1] > 9:
                 y = 10 - self.size[1]
 
-            for i in range(self.size[0]):
-                for j in range(self.size[1]):
-                    win.blit(text.render(self.name, True, (255, 255, 255)), ((x + i) * 70 + 10, (y + j) * 70 + 10))
             win.blit(self.img[self.rotate], (x * 70, y * 70))
-
             return x, y
 
         else:
@@ -116,9 +112,8 @@ win = display.set_mode((1000, 700))
 GRIDS = [[[None for i in range(10)] for j in range(10)] for k in range(2)]
 text = font.Font('INVASION2000.TTF', 20)
 
-ALL_UNITS = [[PT(0), AT(0)], [PT(1), AT(1)]]
-
 # PLACING PHASE
+ALL_UNITS = [[PT(0), AT(0)], [PT(1), AT(1)]]
 for player, units in enumerate(ALL_UNITS):
     Dragging = None
     while True:
@@ -150,16 +145,11 @@ for player, units in enumerate(ALL_UNITS):
             break
         display.update()
 
+# Game Phase
+inGame = True
+while inGame:
+    for player in range(2):
+        inRound = True
+        while inRound:
+            break
 
-# GRID TEST
-player = 0
-while True:
-    win.fill((0, 0, 0))
-    drawGrid(player)
-
-    for Event in event.get():
-        if Event.type == QUIT:
-            quit()
-        if Event.type == MOUSEBUTTONUP:
-            player = 1 - player
-    display.update()
