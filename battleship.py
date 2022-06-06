@@ -93,16 +93,37 @@ class AT(UNIT):
         UNIT.__init__(self, (1, 3), side, 'at', (12, 0), 'artillery.png')
 
 
-def drawGrid(grid):
+class Button:
+    def __init__(self, topleft: tuple, result, img):
+        self.img = image.load(img)
+        self.topleft = topleft
+        self.hitbox = self.img.get_rect(topleft=topleft)
+        self.result = result
+
+    def draw(self):
+        win.blit(self.img,self.topleft)
+
+    def click(self, click):
+        if self.hitbox.collidepoint(click.pos):
+            return self.result
+
+
+def drawGrid(grid, flip=False):
+    x = 0
+    if flip:
+        x = 300
     for i in range(9):
-        draw.line(win, (255, 255, 255), ((i + 1) * 70, 0), ((i + 1) * 70, 700), 2)
-        draw.line(win, (200, 200, 200), (0, (i + 1) * 70), (700, (i + 1) * 70), 2)
-    draw.line(win, (255, 255, 255), (700, 0), (700, 1000), 2)
+        draw.line(win, (255, 255, 255), ((i + 1) * 70 + x, 0), ((i + 1) * 70 + x, 700), 2)
+        draw.line(win, (200, 200, 200), (x, (i + 1) * 70), (700 + x, (i + 1) * 70), 2)
+    if x:
+        draw.line(win, (255, 255, 255), (x, 0), (x, 1000), 2)
+    else:
+        draw.line(win, (255, 255, 255), (700, 0), (700, 1000), 2)
 
     for ROW, ITEMS in enumerate(GRIDS[grid]):
         for COL, SHIP in enumerate(ITEMS):
             if SHIP:
-                win.blit(text.render(SHIP.name, True, (255, 255, 255)), ((COL + 0.1) * 70, (ROW + 0.1) * 70))
+                win.blit(text.render(SHIP.name, True, (255, 255, 255)), ((COL + 0.1) * 70 + x, (ROW + 0.1) * 70 + x))
 
 
 # INITIALIZATION
@@ -147,9 +168,16 @@ for player, units in enumerate(ALL_UNITS):
 
 # Game Phase
 inGame = True
+Menu = 0  # 0 - main; 1 = fire; 2 - settings.
 while inGame:
     for player in range(2):
         inRound = True
         while inRound:
-            break
+            win.fill((0,0,0))
+            if Menu == 0:
+                drawGrid(player)
 
+            for Event in event.get():
+                if Event.type == QUIT:
+                    quit()
+            display.update()
